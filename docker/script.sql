@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS transacoes
     FOREIGN KEY (cliente_id) REFERENCES clientes (id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_transacoes_cliente_id ON transacoes (cliente_id);
+
 DO
 $$
     BEGIN

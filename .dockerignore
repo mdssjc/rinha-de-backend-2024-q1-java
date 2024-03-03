@@ -1,0 +1,11 @@
+/.idea
+/docker
+/load-test
+/target
+Dockerfile
+executar-teste-local.ps1
+executar-teste-local.sh
+gatling-text-report.sh
+HELP.md
+rinha-de-backend-2024-q1.iml
+README.md

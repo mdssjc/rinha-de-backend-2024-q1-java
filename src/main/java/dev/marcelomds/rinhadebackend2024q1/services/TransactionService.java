@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -41,7 +42,8 @@ public class TransactionService {
 
     public StatementResponse summary(Client client) {
         var transactionSummaries = transactionDao.findLast10Transactions(client.id());
-        var balance = new Balance(transactionSummaries.getFirst().saldo(), LocalDateTime.now(), client.limite());
+        var total = transactionSummaries.isEmpty() ? 0L : transactionSummaries.getFirst().saldo();
+        var balance = new Balance(total, LocalDateTime.now(), client.limite());
         return new StatementResponse(balance, transactionSummaries);
     }
 

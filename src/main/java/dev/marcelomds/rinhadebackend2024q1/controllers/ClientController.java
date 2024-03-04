@@ -7,7 +7,6 @@ import dev.marcelomds.rinhadebackend2024q1.services.OperationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @RestController
@@ -17,12 +16,12 @@ public class ClientController {
     private final OperationService operationService;
 
     @PostMapping("/transacoes")
-    public Mono<TransactionResponse> transactions(@PathVariable int id, @Valid @RequestBody TransactionRequest request) {
-        return Mono.just(operationService.transaction(id, request));
+    public TransactionResponse transactions(@PathVariable int id, @Valid @RequestBody TransactionRequest request) {
+        return operationService.transaction(id, request);
     }
 
     @GetMapping("/extrato")
-    public Mono<StatementResponse> transactions(@PathVariable int id) {
-        return Mono.just(operationService.statement(id));
+    public StatementResponse transactions(@PathVariable int id) {
+        return operationService.statement(id);
     }
 }

@@ -15,8 +15,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.6'
-          memory: '200MB'
+          cpus: '0.3'
+          memory: '127MB'
   api02:
     <<: *api
     hostname: api02
@@ -34,24 +34,31 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.17'
-          memory: '10MB'
+          cpus: '0.2'
+          memory: '40MB'
   db:
-    image: postgres:latest
+    image: postgres:16-alpine
+    command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
     hostname: db
     environment:
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_USER=admin
       - POSTGRES_DB=rinha
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=123
     ports:
-      - 5432:5432
+      - '5432:5432'
     volumes:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+      - ./postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf:ro
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
     deploy:
       resources:
         limits:
-          cpus: '0.13'
-          memory: '140MB'
+          cpus: '1.0'
+          memory: '256MB'
 
 networks:
   default:

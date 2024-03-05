@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -25,14 +24,14 @@ public class TransactionService {
     @Transactional
     public TransactionResponse credit(Client client, TransactionRequest request) {
         var lastTransaction = transactionDao.findLastTransaction(client.id());
-        return createTransaction(client, request, lastTransaction.saldo() + request.amountCoerced());
+        return createTransaction(client, request, lastTransaction.saldo() + request.valor().longValue());
     }
 
     @Transactional
     public TransactionResponse debit(Client client, TransactionRequest request) {
         var lastTransaction = transactionDao.findLastTransaction(client.id());
 
-        var newBalance = lastTransaction.saldo() - request.amountCoerced();
+        var newBalance = lastTransaction.saldo() - request.valor().longValue();
         if (Math.abs(newBalance) <= client.limite()) {
             return createTransaction(client, request, newBalance);
         }
@@ -43,12 +42,12 @@ public class TransactionService {
     public StatementResponse summary(Client client) {
         var transactionSummaries = transactionDao.findLast10Transactions(client.id());
         var total = transactionSummaries.isEmpty() ? 0L : transactionSummaries.getFirst().saldo();
-        var balance = new Balance(total, LocalDateTime.now(), client.limite());
+        var balance = new Balance(total * 100, LocalDateTime.now(), client.limite());
         return new StatementResponse(balance, transactionSummaries);
     }
 
     private TransactionResponse createTransaction(Client client, TransactionRequest request, long newBalance) {
         transactionDao.insert(Transaction.of(client.id(), newBalance, request));
-        return new TransactionResponse(client.limite(), newBalance);
+        return new TransactionResponse(client.limite(), newBalance * 100);
     }
 }

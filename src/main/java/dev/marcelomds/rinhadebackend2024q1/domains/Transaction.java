@@ -21,7 +21,7 @@ public record Transaction(
                 -1,
                 clientId,
                 newBalance,
-                transactionRequest.amountCoerced(),
+                transactionRequest.valor().longValue(),
                 transactionRequest.typeCoerced(),
                 transactionRequest.descricao(),
                 LocalDateTime.now()

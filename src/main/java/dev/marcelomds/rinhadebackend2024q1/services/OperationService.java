@@ -8,6 +8,7 @@ import dev.marcelomds.rinhadebackend2024q1.infrastructure.repositories.ClientDao
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RequiredArgsConstructor
@@ -17,16 +18,16 @@ public class OperationService {
     private final ClientDao clientDao;
     private final TransactionService transactionService;
 
+    @Transactional
     public TransactionResponse transaction(int clientId, TransactionRequest request) {
         var client = getClient(clientId);
-        return switch (request.tipo()) {
-            case "c" -> transactionService.credit(client, request);
-            case "d" -> transactionService.debit(client, request);
-            default -> throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Tipo inesperado: %s".formatted(request.tipo()));
-        };
+        if ("c".equalsIgnoreCase(request.tipo())) {
+            return transactionService.credit(client, request);
+        }
+        return transactionService.debit(client, request);
     }
 
+    @Transactional(readOnly = true)
     public StatementResponse statement(int clientId) {
         return transactionService.summary(getClient(clientId));
     }

@@ -10,7 +10,6 @@ import dev.marcelomds.rinhadebackend2024q1.infrastructure.repositories.Transacti
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
@@ -21,33 +20,30 @@ public class TransactionService {
 
     private final TransactionDao transactionDao;
 
-    @Transactional
     public TransactionResponse credit(Client client, TransactionRequest request) {
         var lastTransaction = transactionDao.findLastTransaction(client.id());
-        return createTransaction(client, request, lastTransaction.saldo() + request.valor().longValue());
+        return createTransaction(client, request, lastTransaction.saldo() + request.valor());
     }
 
-    @Transactional
     public TransactionResponse debit(Client client, TransactionRequest request) {
         var lastTransaction = transactionDao.findLastTransaction(client.id());
 
-        var newBalance = lastTransaction.saldo() - request.valor().longValue();
-        if (Math.abs(newBalance) <= client.limite()) {
-            return createTransaction(client, request, newBalance);
+        var newBalance = lastTransaction.saldo() - request.valor();
+        if (newBalance + client.limite() < 0) {
+            throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
-        throw new HttpClientErrorException(HttpStatus.UNPROCESSABLE_ENTITY);
+        return createTransaction(client, request, newBalance);
     }
 
     public StatementResponse summary(Client client) {
         var transactionSummaries = transactionDao.findLast10Transactions(client.id());
         var total = transactionSummaries.isEmpty() ? 0L : transactionSummaries.getFirst().saldo();
-        var balance = new Balance(total * 100, LocalDateTime.now(), client.limite());
+        var balance = new Balance(total, LocalDateTime.now(), client.limite());
         return new StatementResponse(balance, transactionSummaries);
     }
 
     private TransactionResponse createTransaction(Client client, TransactionRequest request, long newBalance) {
         transactionDao.insert(Transaction.of(client.id(), newBalance, request));
-        return new TransactionResponse(client.limite(), newBalance * 100);
+        return new TransactionResponse(client.limite(), newBalance);
     }
 }

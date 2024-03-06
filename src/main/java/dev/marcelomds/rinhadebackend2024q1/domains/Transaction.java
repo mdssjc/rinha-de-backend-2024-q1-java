@@ -10,7 +10,7 @@ public record Transaction(
         long saldo,
 
         long valor,
-        char tipo,
+        String tipo,
         String descricao,
 
         LocalDateTime realizadaEm
@@ -21,8 +21,8 @@ public record Transaction(
                 -1,
                 clientId,
                 newBalance,
-                transactionRequest.valor().longValue(),
-                transactionRequest.typeCoerced(),
+                transactionRequest.valor(),
+                transactionRequest.tipo(),
                 transactionRequest.descricao(),
                 LocalDateTime.now()
         );

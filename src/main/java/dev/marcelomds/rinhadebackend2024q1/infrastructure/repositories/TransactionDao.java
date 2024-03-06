@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionDao {
 
-    private static final Transaction TRANSACTION_NULL_OBJECT = new Transaction(0, 0, 0, 0, 'c', "", null);
+    private static final Transaction TRANSACTION_NULL_OBJECT = new Transaction(0, 0, 0, 0, "c", "", null);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,7 +26,7 @@ public class TransactionDao {
                                     result.getInt("cliente_id"),
                                     result.getLong("saldo"),
                                     result.getLong("valor"),
-                                    result.getString("tipo").charAt(0),
+                                    result.getString("tipo"),
                                     result.getString("descricao"),
                                     result.getTimestamp("realizada_em").toLocalDateTime())
                     , clientId);

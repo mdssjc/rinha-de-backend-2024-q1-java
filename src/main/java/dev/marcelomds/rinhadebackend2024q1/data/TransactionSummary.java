@@ -8,7 +8,7 @@ public record TransactionSummary(
         @JsonIgnore
         long saldo,
         long valor,
-        char tipo,
+        String tipo,
         String descricao,
         LocalDateTime realizadaEm
 ) {

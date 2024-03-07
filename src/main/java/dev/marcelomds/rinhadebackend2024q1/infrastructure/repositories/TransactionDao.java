@@ -51,7 +51,7 @@ public class TransactionDao {
                         new TransactionSummary(
                                 result.getInt("saldo"),
                                 result.getInt("valor"),
-                                result.getString("tipo").charAt(0),
+                                result.getString("tipo"),
                                 result.getString("descricao"),
                                 result.getTimestamp("realizada_em").toLocalDateTime())
                 , clientId);

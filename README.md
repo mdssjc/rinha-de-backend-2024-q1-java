@@ -15,6 +15,6 @@ Submissão feita com:
 - `spring-boot` como backend framework;
 - `nginx` como load balancer; e
 - `postgres` como banco de dados.
-- [repositório da api](https://github.com/mdssjc/rinha-de-backend-2024-q1)
+- [repositório da api](https://github.com/mdssjc/rinha-de-backend-2024-q1-java)
 
 [@mdssjc](https://twitter.com/mdssjc) @ twitter

@@ -4,21 +4,11 @@ spring:
     username: ${DB_USER:admin}
     password: ${DB_PASSWORD:123}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 30
   jackson:
     deserialization:
       accept-float-as-int: false
-  devtools:
-    remote:
-      restart:
-        enabled: false
   threads:
     virtual:
       enabled: true
-server:
-  error:
-    whitelabel:
-      enabled: false
-  compression:
-    enabled: true
-    mime-types: application/json
-    min-response-size: 1024

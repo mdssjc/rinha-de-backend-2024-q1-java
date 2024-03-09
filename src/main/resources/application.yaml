@@ -5,10 +5,15 @@ spring:
     password: ${DB_PASSWORD:123}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 30
+      maximum-pool-size: 40
   jackson:
     deserialization:
       accept-float-as-int: false
   threads:
     virtual:
       enabled: true
+server:
+  tomcat:
+    threads:
+      max: 300
+    accept-count: 200
